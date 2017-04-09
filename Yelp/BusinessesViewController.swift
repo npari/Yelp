@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
     
     @IBOutlet weak var businessTableView: UITableView!
     var businesses: [Business]!
@@ -23,31 +23,21 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         businessTableView.rowHeight = UITableViewAutomaticDimension
         businessTableView.estimatedRowHeight = 120
         
-        
-        Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
+        //By default, we display the restaurants in the feeds page
+        Business.searchWithTerm(term: "Restaurants", completion: { (businesses: [Business]?, error: Error?) -> Void in
             
             self.businesses = businesses
             self.businessTableView.reloadData()
+            
+            //Logging the data
             if let businesses = businesses {
                 for business in businesses {
                     print(business.name!)
                     print(business.address!)
                 }
             }
-            
             }
         )
-        
-        /* Example of Yelp search with more search options specified
-         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-         self.businesses = businesses
-         
-         for business in businesses {
-         print(business.name!)
-         print(business.address!)
-         }
-         }
-         */
         
     }
     
@@ -61,12 +51,11 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let businessCell = businessTableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
         
+        let businessCell = businessTableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
         businessCell.business = businesses[indexPath.row]
         
         return businessCell
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -74,14 +63,27 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         // Dispose of any resources that can be recreated.
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let navigationController = segue.destination as! UINavigationController
+        let filtersViewController = navigationController.topViewController as! FiltersViewController
+        filtersViewController.delegate = self
+    }
+        
+    //Delegate method implementation
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
+        
+        let categories = filters["categories"] as? [String]
+        let sort = filters["sort"] as? YelpSortMode
+//        let distance = filters["distance"] as? Int
+        let deals = filters["deals"] as? Bool
+        
+        Business.searchWithTerm(term: "Restaurants",
+                                sort: sort,
+                                categories: categories,
+                                deals: deals,
+                                completion: ({businesses, error -> Void in
+                                    self.businesses = businesses
+                                    self.businessTableView.reloadData()
+                                }))
+    }
 }
