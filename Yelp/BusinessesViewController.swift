@@ -8,10 +8,16 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, FiltersViewControllerDelegate {
     
+    //The tableview in Yelp main screen
     @IBOutlet weak var businessTableView: UITableView!
+    
+    //Array of Business objects that represents each business in Yelp
     var businesses: [Business]!
+    
+    //UISearchBar in Yelp main screen
+    var yelpSearchBar: UISearchBar?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +28,9 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         //Direct to use autolayout constraints
         businessTableView.rowHeight = UITableViewAutomaticDimension
         businessTableView.estimatedRowHeight = 120
+        
+        //Creating the Yelp Search Bar
+        createYelpSearchBar()
         
         //By default, we display the restaurants in the feeds page
         Business.searchWithTerm(term: "Restaurants", completion: { (businesses: [Business]?, error: Error?) -> Void in
@@ -38,8 +47,64 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
             }
             }
         )
-        
     }
+    
+    func displayDefaultRestaurants() {
+        Business.searchWithTerm(term: "Restaurants", completion: { (businesses: [Business]?, error: Error?) -> Void in
+            
+            self.businesses = businesses
+            self.businessTableView.reloadData()
+            
+            //Logging the data
+            if let businesses = businesses {
+                for business in businesses {
+                    print(business.name!)
+                    print(business.address!)
+                }
+            }
+            }
+        )
+    }
+    
+    /******************************************************
+     **************** Methods for Search Bar **************
+     ******************************************************/
+    
+    //This method creates the search bar for Yelp
+    func createYelpSearchBar() {
+        yelpSearchBar = UISearchBar()
+        yelpSearchBar?.placeholder = "Restaurants"
+        yelpSearchBar?.sizeToFit()
+        yelpSearchBar?.delegate = self
+        
+        self.navigationItem.titleView = yelpSearchBar
+    }
+    
+    //This method displays the cancel button when user starts editing text
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        yelpSearchBar?.showsCancelButton = true
+    }
+    
+    //This method cancels the search on cancel button click
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        yelpSearchBar?.showsCancelButton = false
+        yelpSearchBar?.text = ""
+        yelpSearchBar?.resignFirstResponder()
+        
+        displayDefaultRestaurants()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        businesses = searchText.isEmpty ? businesses : businesses.filter(){(business: Business) -> Bool in
+            return (business.name)?.range(of: searchText, options: .caseInsensitive) != nil
+        }
+       
+        //Reloading the Business tableview to feature new search results
+        businessTableView.reloadData()
+    }
+    
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
