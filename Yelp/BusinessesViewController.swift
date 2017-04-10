@@ -139,12 +139,13 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         
         let categories = filters["categories"] as? [String]
         let sort = filters["sort"] as? YelpSortMode
-//        let distance = filters["distance"] as? Int
+        let distance = filters["distance"] as? Int
         let deals = filters["deals"] as? Bool
         
         Business.searchWithTerm(term: "Restaurants",
                                 sort: sort,
                                 categories: categories,
+                                distance: distance,
                                 deals: deals,
                                 completion: ({businesses, error -> Void in
                                     self.businesses = businesses

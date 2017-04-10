@@ -18,36 +18,87 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     weak var delegate: FiltersViewControllerDelegate?
     
     var categories: [[String:String]]!
-    var switchStates = [Int:Bool]()
+    var distances: [[String:String]]!
+    var sortBy: [[String:String]]!
+    
+    var switchStates = [IndexPath:Bool]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         categories = yelpCategories()
+        
+        
         FiltersTableView.delegate = self
         FiltersTableView.dataSource = self
     }
     
     
+    //SECTIONS 
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 4
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return " "
+        case 1:
+            return "Distance"
+        case 2:
+            return "Sort By"
+        case 3:
+            return "Category"
+        default:
+            return ""
+        }
+    }
+    
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        switch section {
+        case 0:
+            return 1  //Deals
+        case 1:
+            return yelpDistances().count //Distance
+        case 2:
+            return yelpSortBy().count //Sort By
+        case 3:
+            return yelpCategories().count  //Category
+        default:
+            return 0
+        }
     }
     
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = FiltersTableView.indexPath(for: switchCell)!
-        switchStates[indexPath.row] = value
-        print("Got the switch event")
+        switchStates[indexPath] = value
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let switchCell = FiltersTableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
         
-        switchCell.switchLabel.text = categories[indexPath.row]["name"]
+        switch indexPath.section {
+        case 0:
+            switchCell.switchLabel.text = yelpDeals() //Deals
+        case 1:
+            switchCell.switchLabel.text = yelpDistances()[indexPath.row]["name"] //Distance
+        case 2:
+           switchCell.switchLabel.text = yelpSortBy()[indexPath.row]["name"] //Sort By
+        case 3:
+           switchCell.switchLabel.text = yelpCategories()[indexPath.row]["name"]  //Category
+        default:
+            break
+            
+        }
+        
         switchCell.delegate = self
-        switchCell.onSwitch.isOn = switchStates[indexPath.row] ?? false
+        switchCell.onSwitch.isOn = switchStates[indexPath] ?? false
         
         return switchCell
     }
-
+    
+    //CELLS
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -63,9 +114,23 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         
         //Storing the list of categories to be used in search
         var selectedCategories = [String]()
-        for (row, isSelected) in switchStates {
+        
+        for (indexPath, isSelected) in switchStates {
             if isSelected {
-                selectedCategories.append(categories[row]["code"]!)
+                
+                switch indexPath.section {
+                case 0:
+                    filters["deals"] = isSelected as AnyObject?
+                case 1:
+                    filters["distance"] = Int(yelpDistances()[indexPath.row]["code"]!) as AnyObject?
+                case 2:
+                     let sortCode = Int(yelpSortBy()[indexPath.row]["code"]!)
+                     filters["sort"] = YelpSortMode(rawValue: sortCode!) as AnyObject?
+                case 3:
+                    selectedCategories.append(categories[indexPath.row]["code"]!)
+                default: break
+                    
+                }
             }
         }
         
@@ -77,19 +142,24 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         delegate?.filtersViewController?(filtersViewController: self, didUpdateFilters: filters)
     }
     
+    
+    func yelpDeals() -> String {
+       return "Offering a Deal"
+    }
+    
     //This function returns all the Yelp Distances
-    func yelpDistances () -> [[String:String]]{
+    func yelpDistances() -> [[String:String]]{
         return [
-            ["name": "Auto", "code": "94086"],
-            ["name": "0.3 miles", "code": "94085"],
-            ["name": "5 miles", "code": "94900"],
-            ["name": "10 miles", "code": "95020"],
-            ["name": "25 miles", "code": "95051"]
+            ["name": "Auto", "code": "1050"],
+            ["name": "0.3 miles", "code": "300"],
+            ["name": "5 miles", "code": "5000"],
+            ["name": "10 miles", "code": "1000"],
+            ["name": "25 miles", "code": "25000"]
         ]
     }
     
     //This function returns all the Yelp Sorting options
-    func yelpSorts () -> [[String: String]]{
+    func yelpSortBy() -> [[String: String]]{
         return [
             ["name": "Best Match", "code": "0"],
             ["name": "Distance", "code": "1"],
@@ -98,7 +168,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     }
 
     //This function returns all the Yelp Categories
-    func yelpCategories () -> [[String: String]]{
+    func yelpCategories() -> [[String: String]]{
         return [
             ["name" : "Afghan", "code": "afghani"],
             ["name" : "African", "code": "african"],
