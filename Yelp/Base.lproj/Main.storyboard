@@ -26,7 +26,7 @@
                                         <rect key="frame" x="0.0" y="92" width="375" height="107"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VT1-hh-dUa" id="OEj-2C-9hc">
-                                            <frame key="frameInset" width="375" height="106.5"/>
+                                            <frame key="frameInset" width="375" height="106"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ONY-k3-Sz2">
@@ -117,7 +117,8 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="ZAH-la-IC0">
-                        <barButtonItem key="leftBarButtonItem" title="Filters" id="oot-Ud-Y0U">
+                        <barButtonItem key="leftBarButtonItem" title="Filter" id="oot-Ud-Y0U">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <segue destination="wN8-he-88F" kind="presentation" id="bXz-19-uKI"/>
                             </connections>
@@ -150,7 +151,7 @@
                                         <rect key="frame" x="0.0" y="92" width="375" height="90"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jLj-l0-BQf" id="rcq-v3-eZy">
-                                            <frame key="frameInset" width="375" height="89.5"/>
+                                            <frame key="frameInset" width="375" height="89"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F6L-lq-tT3">
@@ -185,11 +186,13 @@
                     </view>
                     <navigationItem key="navigationItem" title="Filters" id="VC6-EX-YAh">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="P6B-8A-C5q">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="onCancelButtonClick:" destination="ASi-MG-uYr" id="d9o-WS-l7m"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Search" id="Q8W-bO-TBg">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="onSearchButtonClick:" destination="ASi-MG-uYr" id="xHg-wK-YeG"/>
                             </connections>
@@ -208,9 +211,10 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="BKx-9W-WAk" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="uG3-1B-ewy">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="uG3-1B-ewy">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.66999345549738221" green="0.024890488041129186" blue="0.0051086287173974024" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -226,9 +230,10 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="wN8-he-88F" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="g2c-lr-Mj7">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="g2c-lr-Mj7">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.6699934555" green="0.024890488039999999" blue="0.0051086287169999998" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
