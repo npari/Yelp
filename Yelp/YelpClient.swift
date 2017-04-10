@@ -44,7 +44,7 @@ class YelpClient: BDBOAuth1RequestOperationManager {
     }
     
     func searchWithTerm(_ term: String, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
-        return searchWithTerm(term, sort: nil, categories: nil, deals: nil, completion: completion)
+        return searchWithTerm(term, sort: nil, categories: nil, distance: nil, deals: nil, completion: completion)
     }
     
     func searchWithTerm(_ term: String, sort: YelpSortMode?, categories: [String]?, distance: Int?, deals: Bool?, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
@@ -61,10 +61,15 @@ class YelpClient: BDBOAuth1RequestOperationManager {
             parameters["category_filter"] = (categories!).joined(separator: ",") as AnyObject?
         }
         
+        if distance != nil {
+            parameters["radius_filter"] = distance! as AnyObject?
+        }
+        
         if deals != nil {
             parameters["deals_filter"] = deals! as AnyObject?
         }
         
+        print("API CALL")
         print(parameters)
         
         return self.get("search", parameters: parameters,
